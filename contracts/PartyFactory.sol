@@ -15,24 +15,25 @@ contract PartyFactory {
     function createParty(
         string memory name,
         string memory symbol,
-        uint256 maxAttendees,            uint256 ticketCost,
-            string memory poster
-    )
-        public
-        returns (
-            address PartyAddress
-
-        )
-    {
+        uint256 maxAttendees,
+        uint256 ticketCost
+    ) public returns (address) {
         Party newParty = new Party(
             name,
             symbol,
             maxAttendees,
             ticketCost,
             msg.sender,
-            poster,
             address(this),
             i_percentCut
         );
+        addressToPartiesOwned[msg.sender].push(address(newParty));
+        return address(newParty);
+    }
+
+    //View Functions
+    function getParties(address host) public view returns (address[] memory) {
+        return addressToPartiesOwned[host];
+
     }
 }
