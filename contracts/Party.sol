@@ -5,12 +5,15 @@ import "@openzeppelin/contracts/token/ERC721/ERC721.sol";
 
 contract Party is ERC721 {
     //state variables
-    uint256 immutable totalSupply;
-    uint256 s_tokenId;
-    uint256 immutable i_cost;
-    address immutable i_owner;
+    uint256 public immutable totalSupply;
+    uint256 public immutable i_percentCut;
+    uint256 private s_tokenId;
+    uint256 public immutable i_cost;
+    address public immutable i_owner;
+    address public immutable i_parent;
     mapping(uint256 => bool) isCheckedIn;
     mapping(address => bool) isAuthorized;
+    string public s_poster;
 
     //Custom Errors
     error Party__SendWithTicketCost();
@@ -30,11 +33,15 @@ contract Party is ERC721 {
         string memory symbol,
         uint256 maxAttendees,
         uint256 cost,
-        address owner
+        address owner,
+        address parent,
+        uint256 percentCut //in Basis Points (percent * 100)
     ) ERC721(name, symbol) {
         totalSupply = maxAttendees;
         i_cost = cost;
         i_owner = owner;
+        i_parent = parent;
+        i_percentCut = percentCut;
     }
 
     //Receive and Fallback Functions
@@ -81,5 +88,31 @@ contract Party is ERC721 {
             revert();
         }
         isCheckedIn[tokenId] = true;
+    }
+
+    function withdraw() external onlyOwner {
+        payable(i_parent).transfer(((address(this).balance) * i_percentCut) / 10000);
+        payable(msg.sender).transfer(address(this).balance);
+    }
+
+    function setPoster(string memory newPoster) external {
+        s_poster = newPoster;
+    }
+
+    //View Functions
+    function getIsCheckedIn(uint256 tokenId) public view returns (bool) {
+        return isCheckedIn[tokenId];
+    }
+
+    function getIsAuthorized(address grantee) public view returns (bool) {
+        return isAuthorized[grantee];
+    }
+
+    function getPoster() public view returns (string memory) {
+        return (s_poster);
+    }
+
+    function getCost() public view returns (uint256) {
+        return (i_cost);
     }
 }
