@@ -104,6 +104,10 @@ contract Party is ERC721 {
         return isCheckedIn[tokenId];
     }
 
+    function getExists(uint256 tokenId) public view returns (bool) {
+        return _exists(tokenId);
+    }
+
     function getIsAuthorized(address grantee) public view returns (bool) {
         return isAuthorized[grantee];
     }
