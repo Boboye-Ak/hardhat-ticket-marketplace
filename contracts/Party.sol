@@ -7,7 +7,7 @@ contract Party is ERC721 {
     //state variables
     uint256 public immutable totalSupply;
     uint256 public immutable i_percentCut;
-    uint256 private s_tokenId;
+    uint256 public s_tokenId;
     uint256 public immutable i_cost;
     address public immutable i_owner;
     address public immutable i_parent;
@@ -53,7 +53,7 @@ contract Party is ERC721 {
         revert();
     }
 
-    function buyTicket() external payable returns (uint256 tokenId) {
+    function buyTicket(address ticketOwner) external payable returns (uint256 tokenId) {
         if (msg.value < i_cost) {
             revert Party__SendWithTicketCost();
         }
@@ -62,7 +62,7 @@ contract Party is ERC721 {
         }
 
         s_tokenId += 1;
-        _safeMint(msg.sender, s_tokenId);
+        _safeMint(ticketOwner, s_tokenId);
         return s_tokenId;
     }
 
@@ -114,5 +114,9 @@ contract Party is ERC721 {
 
     function getCost() public view returns (uint256) {
         return (i_cost);
+    }
+
+    function getTotalSold() public view returns (uint256) {
+        return s_tokenId;
     }
 }

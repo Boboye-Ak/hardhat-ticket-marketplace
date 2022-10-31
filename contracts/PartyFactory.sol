@@ -6,10 +6,23 @@ import "./Party.sol";
 contract PartyFactory {
     //State variables
     uint256 i_percentCut;
+    address immutable i_owner;
     mapping(address => address[]) addressToPartiesOwned;
+
+    //Custom Errors
+    error PartyFactory__Unauthorized();
+
+    //Modifiers
+    modifier onlyOwner() {
+        if (msg.sender != i_owner) {
+            revert PartyFactory__Unauthorized();
+        }
+        _;
+    }
 
     constructor(uint256 percentCut) {
         i_percentCut = percentCut;
+        i_owner = msg.sender;
     }
 
     function createParty(
@@ -31,9 +44,12 @@ contract PartyFactory {
         return address(newParty);
     }
 
+    function withdraw() public onlyOwner {
+        payable(msg.sender).transfer(address(this).balance);
+    }
+
     //View Functions
     function getParties(address host) public view returns (address[] memory) {
         return addressToPartiesOwned[host];
-
     }
 }
