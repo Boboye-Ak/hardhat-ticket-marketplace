@@ -19,6 +19,7 @@ contract Party is ERC721 {
     error Party__SendWithTicketCost();
     error Party__SoldOut();
     error Party__Unauthorized();
+    error Party__NonExistentToken();
 
     //modifiers
     modifier onlyOwner() {
@@ -81,6 +82,9 @@ contract Party is ERC721 {
     }
 
     function checkIn(uint256 tokenId) external {
+        if (!_exists(tokenId)) {
+            revert Party__NonExistentToken();
+        }
         if ((msg.sender != i_owner) && (!isAuthorized[msg.sender])) {
             revert Party__Unauthorized();
         }
