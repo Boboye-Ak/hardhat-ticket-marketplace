@@ -22,6 +22,7 @@ const { assert, expect } = require("chai")
           const symbol = networkConfig[chainId]["symbol"]
           const maxAttendees = networkConfig[chainId]["maxAttendees"]
           const cost = networkConfig[chainId]["cost"]
+          const poster = networkConfig[chainId]["poster"]
           beforeEach(async () => {
               await deployments.fixture(["deployment"])
               deployer = (await hre.getNamedAccounts()).deployer
@@ -51,6 +52,17 @@ const { assert, expect } = require("chai")
                   it("mints the NFT", async () => {
                       await guestParty.buyTicket(guest.address, { value: cost })
                       assert.equal(await guestParty.getExists(1), true)
+                  })
+                  it("reverts if the party is sold out", async () => {
+                      let i = 0
+                      while (i < parseInt(maxAttendees)) {
+                          await guestParty.buyTicket(guest.address, { value: cost })
+                          i++
+                          console.log(`${i} tickets bought`)
+                      }
+                      await expect(
+                          guestParty.buyTicket(guest.address, { value: cost })
+                      ).to.be.revertedWith("Party__SoldOut")
                   })
               })
               describe("grantAuthorization", () => {
@@ -118,6 +130,12 @@ const { assert, expect } = require("chai")
                       const txResponse = await party.withdraw()
                       assert.equal(await party.provider.getBalance(party.address), 0)
                   })
+              })
+          })
+          describe("setPoster", () => {
+              it("sets the poster string", async () => {
+                  await party.setPoster(poster)
+                  assert.equal(await party.getPoster(), poster)
               })
           })
       })
