@@ -101,5 +101,23 @@ const { assert, expect } = require("chai")
                       assert.equal(await party.getIsCheckedIn(1), true)
                   })
               })
+              describe("withdraw", () => {
+                  const cut = (parseInt(cost.toString()) * (percentCut / 10000)).toString()
+                  const remainder = (parseInt(cost.toString()) - parseInt(cut)).toString()
+                  beforeEach(async () => {
+                      await guestParty.buyTicket(guest.address, { value: cost })
+                  })
+                  it("sends a percent cut to the parent contract", async () => {
+                      await party.withdraw()
+                      const parentContractBalance = (
+                          await party.provider.getBalance(partyFactory.address)
+                      ).toString()
+                      assert.equal(cut, parentContractBalance)
+                  })
+                  it("sends the remainder to the host", async () => {
+                      const txResponse = await party.withdraw()
+                      assert.equal(await party.provider.getBalance(party.address), 0)
+                  })
+              })
           })
       })

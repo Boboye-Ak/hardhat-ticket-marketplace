@@ -25,6 +25,15 @@ contract PartyFactory {
         i_owner = msg.sender;
     }
 
+    //Receive and Fallback Functions
+    receive() external payable {
+        
+    }
+
+    fallback() external payable {
+        revert();
+    }
+
     function createParty(
         string memory name,
         string memory symbol,
