@@ -13,6 +13,8 @@ contract PartyFactory {
     error PartyFactory__Unauthorized();
 
     //Events
+    event partyCreated(address indexed partyAddress);
+    event withdrawn();
 
     //Modifiers
     modifier onlyOwner() {
@@ -50,11 +52,13 @@ contract PartyFactory {
             i_percentCut
         );
         addressToPartiesOwned[msg.sender].push(address(newParty));
+        emit partyCreated(address(newParty));
         return address(newParty);
     }
 
     function withdraw() public onlyOwner {
         payable(msg.sender).transfer(address(this).balance);
+        emit withdrawn();
     }
 
     //View Functions
