@@ -12,6 +12,8 @@ contract PartyFactory {
     //Custom Errors
     error PartyFactory__Unauthorized();
 
+    //Events
+
     //Modifiers
     modifier onlyOwner() {
         if (msg.sender != i_owner) {
@@ -26,9 +28,7 @@ contract PartyFactory {
     }
 
     //Receive and Fallback Functions
-    receive() external payable {
-        
-    }
+    receive() external payable {}
 
     fallback() external payable {
         revert();

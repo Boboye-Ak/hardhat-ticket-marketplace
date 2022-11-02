@@ -21,6 +21,13 @@ contract Party is ERC721 {
     error Party__Unauthorized();
     error Party__NonExistentToken();
 
+    //Events
+    event bougtTicket(address indexed owner, uint256 tokenId);
+    event authorizationChanged(address indexed grantee, bool indexed newState);
+    event checkedIn(uint256 indexed tokenId);
+    event withdrawn();
+    event posterSet(string indexed newPoster);
+
     //modifiers
     modifier onlyOwner() {
         if (msg.sender != i_owner) {
@@ -64,6 +71,7 @@ contract Party is ERC721 {
 
         s_tokenId += 1;
         _safeMint(ticketOwner, s_tokenId);
+        emit bougtTicket(ticketOwner, s_tokenId);
         return s_tokenId;
     }
 
@@ -72,6 +80,7 @@ contract Party is ERC721 {
             revert();
         }
         isAuthorized[grantee] = true;
+        emit authorizationChanged(grantee, true);
     }
 
     function revokeAuthorization(address grantee) external onlyOwner {
@@ -79,6 +88,7 @@ contract Party is ERC721 {
             revert();
         }
         isAuthorized[grantee] = false;
+        emit authorizationChanged(grantee, false);
     }
 
     function checkIn(uint256 tokenId) external {
@@ -92,15 +102,18 @@ contract Party is ERC721 {
             revert();
         }
         isCheckedIn[tokenId] = true;
+        emit checkedIn(tokenId);
     }
 
     function withdraw() external onlyOwner {
         payable(i_parent).transfer(((address(this).balance) * i_percentCut) / 10000);
         payable(msg.sender).transfer(address(this).balance);
+        emit withdrawn();
     }
 
     function setPoster(string memory newPoster) external {
         s_poster = newPoster;
+        emit posterSet(newPoster);
     }
 
     //View Functions

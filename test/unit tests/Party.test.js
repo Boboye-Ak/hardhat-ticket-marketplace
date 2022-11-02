@@ -58,7 +58,6 @@ const { assert, expect } = require("chai")
                       while (i < parseInt(maxAttendees)) {
                           await guestParty.buyTicket(guest.address, { value: cost })
                           i++
-                          console.log(`${i} tickets bought`)
                       }
                       await expect(
                           guestParty.buyTicket(guest.address, { value: cost })
@@ -70,6 +69,10 @@ const { assert, expect } = require("chai")
                       await expect(
                           guestParty.grantAuthorization(gateKeeper.address)
                       ).to.be.revertedWith("Party__Unauthorized")
+                  })
+                  it("reverts if already authorized", async () => {
+                      await party.grantAuthorization(gateKeeper.address)
+                      await expect(party.grantAuthorization(gateKeeper.address)).to.be.reverted
                   })
                   it("grants authorization if called by owner", async () => {
                       await party.grantAuthorization(gateKeeper.address)
