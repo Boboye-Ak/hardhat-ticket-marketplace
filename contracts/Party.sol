@@ -140,4 +140,12 @@ contract Party is ERC721 {
     function getTotalSold() public view returns (uint256) {
         return s_tokenId;
     }
+
+    function getMaxAttendees() public view returns (uint256) {
+        return totalSupply;
+    }
+
+    function getHost() public view returns (address) {
+        return i_owner;
+    }
 }

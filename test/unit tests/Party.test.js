@@ -25,7 +25,7 @@ const { assert, expect } = require("chai")
           const poster = networkConfig[chainId]["poster"]
           beforeEach(async () => {
               await deployments.fixture(["deployment"])
-              deployer = (await hre.getNamedAccounts()).deployer
+              deployer = (await ethers.getSigners())[0]
               host = (await ethers.getSigners())[1]
               guest = (await ethers.getSigners())[2]
               gateKeeper = (await ethers.getSigners())[3]
@@ -35,10 +35,18 @@ const { assert, expect } = require("chai")
               guestParty = await ethers.getContractAt("Party", partyAddress, guest)
               gateKeeperParty = await ethers.getContractAt("Party", partyAddress, gateKeeper)
           })
-          describe("PartyFactory", () => {
-              it("", async () => {})
-          })
+
           describe("Party", () => {
+              describe("constructor", () => {
+                  it("initializes properly", async () => {
+                      assert.equal(await party.name(), partyName)
+                      assert.equal(await party.symbol(), symbol)
+                      assert.equal(await party.getMaxAttendees(), maxAttendees)
+                      assert.equal((await party.getCost()).toString(), cost.toString())
+                      assert.equal(await party.getHost(), host.address)
+                      assert.equal((await party.i_percentCut()).toString(), percentCut.toString())
+                  })
+              })
               describe("buyTicket", () => {
                   it("reverts if you dont send the cost of the ticket", async () => {
                       await expect(guestParty.buyTicket(guest.address)).to.be.revertedWith(
@@ -162,8 +170,8 @@ const { assert, expect } = require("chai")
                   await party.setPoster(poster)
                   assert.equal(await party.getPoster(), poster)
               })
-              it("emits an event", async()=>{
-                expect(await party.setPoster(poster)).to.emit("posterSet")
+              it("emits an event", async () => {
+                  expect(await party.setPoster(poster)).to.emit("posterSet")
               })
           })
       })

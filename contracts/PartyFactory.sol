@@ -5,8 +5,8 @@ import "./Party.sol";
 
 contract PartyFactory {
     //State variables
-    uint256 i_percentCut;
-    address immutable i_owner;
+    uint256 public immutable i_percentCut;
+    address public immutable i_owner;
     mapping(address => address[]) addressToPartiesOwned;
 
     //Custom Errors
