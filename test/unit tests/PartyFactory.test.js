@@ -39,7 +39,6 @@ const { assert, expect } = require("chai")
                   hostParty = await party.connect(host)
                   await guestParty.buyTicket(guest.address, { value: cost })
                   initialOwnerBalance = await guestParty.provider.getBalance(deployer.address)
-
                   await hostParty.withdraw()
                   partyFactoryBalance = await guestParty.provider.getBalance(partyFactory.address)
               })

@@ -8,6 +8,7 @@ contract PartyFactory {
     uint256 public immutable i_percentCut;
     address public immutable i_owner;
     mapping(address => address[]) addressToPartiesOwned;
+    mapping(address => bool) isParty;
 
     //Custom Errors
     error PartyFactory__Unauthorized();
@@ -52,6 +53,7 @@ contract PartyFactory {
             i_percentCut
         );
         addressToPartiesOwned[msg.sender].push(address(newParty));
+        isParty[address(newParty)] = true;
         emit partyCreated(address(newParty));
         return address(newParty);
     }
@@ -64,5 +66,9 @@ contract PartyFactory {
     //View Functions
     function getParties(address host) public view returns (address[] memory) {
         return addressToPartiesOwned[host];
+    }
+
+    function getIsParty(address partyAddress) public view returns (bool) {
+        return isParty[partyAddress];
     }
 }
