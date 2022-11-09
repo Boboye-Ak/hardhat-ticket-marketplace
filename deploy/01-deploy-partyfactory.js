@@ -23,4 +23,4 @@ module.exports = async (hre) => {
     log("----------------------------- ")
 }
 
-module.exports.tags=["all", "deployment", "deploy-partyfactory"]
+module.exports.tags = ["all", "deployment", "deploy-partyfactory"]

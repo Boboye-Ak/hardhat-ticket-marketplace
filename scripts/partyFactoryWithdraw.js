@@ -5,7 +5,7 @@ let deployer
 const main = async () => {
     deployer = (await getSigners())[0]
     const partyFactory = await getContract("PartyFactory", deployer)
-    const tx=await partyFactory.withdraw()
+    const tx = await partyFactory.withdraw()
 }
 
 main().catch((error) => {

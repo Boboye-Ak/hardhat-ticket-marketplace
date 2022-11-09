@@ -45,7 +45,7 @@ contract Party is ERC721 {
         address parent,
         uint256 percentCut //in Basis Points (percent * 100)
     ) ERC721(name, symbol) {
-        require(maxAttendees>0);
+        require(maxAttendees > 0);
         totalSupply = maxAttendees;
         i_cost = cost;
         i_owner = owner;
