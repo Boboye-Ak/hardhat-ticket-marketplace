@@ -134,6 +134,11 @@ contract Party is ERC721 {
         return (s_poster);
     }
 
+    function tokenURI(uint256 tokenId) public view virtual override returns (string memory) {
+        _requireMinted(tokenId);
+        return (s_poster);
+    }
+
     function getCost() public view returns (uint256) {
         return (i_cost);
     }
